@@ -12,7 +12,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    switchLyngvo(QLocale::system().name());
+    ui -> comboBox ->addItems(QStringList() << "en_EN" << "ru_RU");
+
+    myTranslator.load(QString("dz_4_") + QString("en_EN"));
+    qApp ->installTranslator(&myTranslator);
+
 
     openAct = new QPushButton(this);
     openAct -> move(10, 440);
@@ -29,24 +33,38 @@ MainWindow::MainWindow(QWidget *parent) :
     exitAct = new QPushButton(this);
     exitAct -> move(410, 440);
 
+    keyctrlo = new QShortcut(this);
+    keyctrlo->setKey(Qt::CTRL + Qt::Key_O);
+
+    keyctrls = new QShortcut(this);
+    keyctrls->setKey(Qt::CTRL + Qt::Key_S);
+
+    keyctrlq = new QShortcut(this);
+    keyctrlq->setKey(Qt::CTRL + Qt::Key_Q);
+
     openAct -> setText(tr("Open"));
     saveAct -> setText(tr("Save"));
     helpAct -> setText(tr("Help"));
     lyng -> setText(tr("Lyngvo"));
     exitAct -> setText(tr("Exit"));
 
+
+
     connect(openAct, SIGNAL(clicked()), this, SLOT(open()));
     connect(saveAct, SIGNAL(clicked()), this, SLOT(save()));
     connect(helpAct, SIGNAL(clicked()), this, SLOT(help()));
-    connect(lyng, SIGNAL(clicked()), this, SLOT(lyngvo()));
+    connect(lyng, SIGNAL(clicked()), this, SLOT(switchLingvo()));
     connect(exitAct, SIGNAL(clicked()), this, SLOT(exit()));
-
+    connect(keyctrlo, SIGNAL(activated()), this, SLOT(open()));
+    connect(keyctrls, SIGNAL(activated()), this, SLOT(save()));
+    connect(keyctrlq, SIGNAL(activated()), this, SLOT(exit()));
+    connect(ui -> comboBox, static_cast<void (QComboBox:: *)(const QString &)> (&QComboBox::currentIndexChanged), [=](const QString &str){
+        myTranslator.load("dz_4_" + str, ".");
+        qApp -> installTranslator(&myTranslator);
+    });
 
     textEdit = new QTextEdit();
-
     setWindowTitle(tr("dz_4 ver.1"));
-
-
 
 
 }
@@ -54,6 +72,19 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::changeEvent(QEvent *event)
+{
+if(event -> type() == QEvent::LanguageChange)
+    {
+    ui -> retranslateUi(this);
+    }
+}
+
+void MainWindow::switchLingvo()
+{
+//нет ничего
 }
 
 void MainWindow::open()
@@ -96,35 +127,15 @@ void MainWindow::save()
 
 void MainWindow::help()
 {
-
-    QFile file(":/help.txt");
-    if(file.open(QIODevice::ReadOnly))
+        QFile file(":/help.txt");
+        if (!file.open(QIODevice::ReadOnly))
         {
-        QTextStream help_fl(&file);
-        ui -> textEdit -> setText(help_fl.readAll());
-        file.close();
+            QMessageBox::critical(this, tr("Error!!!"), tr("Not open file!"));
+            return;
         }
-}
-
-
-void MainWindow::lyngvo()
-{
-QObject *obj = sender();
-if (obj == lyng) switchLyngvo("ru");
-}
-
-void MainWindow::switchLyngvo(QString langvage)
-{
-    translater.load(langvage);
-    qApp -> installTranslator(&translater);
-    QString str = tr("Open");
-    openAct -> setText(str + "ru");
-    //saveAct -> setText(tr("Save"));
-    //helpAct -> setText(tr("Help"));
-    //lyng -> setText(tr("Lyngvo"));
-    //exitAct -> setText(tr("Exit"));
-
-
+        QTextStream in(&file);
+        ui -> textEdit -> setText(in.readAll());
+        file.close();
 }
 
 void MainWindow::exit()

@@ -41,5 +41,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     help_dz.qrc
-TRANSLATIONS +=QtLanguage_ru.ts
+TRANSLATIONS +=dz_4_ru.ts
 CODEFOSRC = UTF-8

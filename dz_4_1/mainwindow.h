@@ -3,6 +3,13 @@
 
 #include <QMainWindow>
 #include <QtWidgets>
+#include <QShortcut>
+#include <QTextEdit>
+#include <QPushButton>
+#include <QResource>
+#include <QTranslator>
+#include <QComboBox>
+#include <QEvent>
 
 namespace Ui {
 class MainWindow;
@@ -16,6 +23,9 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+protected:
+    void changeEvent(QEvent *event) override;
+
 private:
     Ui::MainWindow *ui;
     QTextEdit *textEdit;
@@ -24,16 +34,20 @@ private:
     QPushButton *helpAct;
     QPushButton *lyng;
     QPushButton *exitAct;
-    QTranslator translater;
-    void switchLyngvo(QString langvage);
-
+    QShortcut *keyctrls;
+    QShortcut *keyctrlo;
+    QShortcut *keyctrlq;
+    QComboBox *comboBox;
+    QTranslator myTranslator;
 
 private slots:
     void open();
     void save();
     void help();
-    void lyngvo();
     void exit();
+    void switchLingvo();
+    //void ctrls();
+    //void ctrlo();
 };
 
 #endif // MAINWINDOW_H
