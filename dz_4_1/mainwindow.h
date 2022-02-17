@@ -10,6 +10,7 @@
 #include <QTranslator>
 #include <QComboBox>
 #include <QEvent>
+#include <QTextCodec>
 
 namespace Ui {
 class MainWindow;
@@ -32,7 +33,7 @@ private:
     QPushButton *openAct;
     QPushButton *saveAct;
     QPushButton *helpAct;
-    QPushButton *lyng;
+    QPushButton *stile;
     QPushButton *exitAct;
     QShortcut *keyctrls;
     QShortcut *keyctrlo;
@@ -45,7 +46,7 @@ private slots:
     void save();
     void help();
     void exit();
-    void switchLingvo();
+    void switchstil();
     //void ctrls();
     //void ctrlo();
 };

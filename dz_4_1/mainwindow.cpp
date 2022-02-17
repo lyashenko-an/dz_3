@@ -6,7 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     openAct(nullptr),
     saveAct(nullptr),
     helpAct(nullptr),
-    lyng(nullptr),
+    stile(nullptr),
     exitAct(nullptr),
     ui(new Ui::MainWindow)
 {
@@ -27,8 +27,8 @@ MainWindow::MainWindow(QWidget *parent) :
     helpAct = new QPushButton(this);
     helpAct -> move(210, 440);
 
-    lyng = new QPushButton(this);
-    lyng -> move(310, 440);
+    stile = new QPushButton(this);
+    stile -> move(310, 440);
 
     exitAct = new QPushButton(this);
     exitAct -> move(410, 440);
@@ -45,7 +45,7 @@ MainWindow::MainWindow(QWidget *parent) :
     openAct -> setText(tr("Open"));
     saveAct -> setText(tr("Save"));
     helpAct -> setText(tr("Help"));
-    lyng -> setText(tr("Lyngvo"));
+    stile -> setText(tr("Stil"));
     exitAct -> setText(tr("Exit"));
 
 
@@ -53,12 +53,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(openAct, SIGNAL(clicked()), this, SLOT(open()));
     connect(saveAct, SIGNAL(clicked()), this, SLOT(save()));
     connect(helpAct, SIGNAL(clicked()), this, SLOT(help()));
-    connect(lyng, SIGNAL(clicked()), this, SLOT(switchLingvo()));
+    connect(stile, SIGNAL(clicked()), this, SLOT(switchstil()));
     connect(exitAct, SIGNAL(clicked()), this, SLOT(exit()));
     connect(keyctrlo, SIGNAL(activated()), this, SLOT(open()));
     connect(keyctrls, SIGNAL(activated()), this, SLOT(save()));
     connect(keyctrlq, SIGNAL(activated()), this, SLOT(exit()));
-    connect(ui -> comboBox, static_cast<void (QComboBox:: *)(const QString &)> (&QComboBox::currentIndexChanged), [=](const QString &str){
+    connect(ui -> comboBox, static_cast<void (QComboBox:: *)(const QString &) > (&QComboBox::currentIndexChanged), [=](const QString &str){
         myTranslator.load("dz_4_" + str, ".");
         qApp -> installTranslator(&myTranslator);
     });
@@ -82,9 +82,9 @@ if(event -> type() == QEvent::LanguageChange)
     }
 }
 
-void MainWindow::switchLingvo()
+void MainWindow::switchstil()
 {
-//нет ничего
+   qApp -> setStyleSheet("QPushButton {font: bold 14 px; background-color: white;} QMainWindow{background-color:blue}");
 }
 
 void MainWindow::open()
@@ -95,7 +95,7 @@ void MainWindow::open()
         QFile file(fileName);
         if (!file.open(QIODevice::ReadOnly))
         {
-            QMessageBox::critical(this, tr("Error!!!"), tr("Not open file!"));
+            QMessageBox::critical(this, tr("File reading "), tr("Error!!!"));
             return;
         }
 
@@ -113,7 +113,7 @@ void MainWindow::save()
         QFile file(fileName);
         if (!file.open(QIODevice::WriteOnly))
         {
-            QMessageBox msgBox; msgBox.setText("Not save file!"); msgBox.exec();
+            QMessageBox::critical(this, tr("File writing "), tr("Error!!!"));
         }
   else
         {
@@ -130,7 +130,7 @@ void MainWindow::help()
         QFile file(":/help.txt");
         if (!file.open(QIODevice::ReadOnly))
         {
-            QMessageBox::critical(this, tr("Error!!!"), tr("Not open file!"));
+            QMessageBox::critical(this, tr("Error reading the help file"), tr("!!!"));
             return;
         }
         QTextStream in(&file);
